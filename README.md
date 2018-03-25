@@ -1,38 +1,92 @@
-Role Name
-=========
+# Prometheus Server
 
-A brief description of the role goes here.
+Installs and configures a Prometheus server and relevant exporters on Debian Buster nodes.
 
-Requirements
-------------
+## Justification + Architecture
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+There are many ways to manage the Prometheus installation. The approach taken previously is to install a set of
+"exporters" - agents on a system, and expose those publicly - perhaps moderated by some sort of reverse proxy
+that implements a basic authentication layer and TLS.
 
-Role Variables
---------------
+There are two problems with this the previous way of implementing Prometheus:
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+- The exporters are not packaged and the configuration to manage them is verbose.
+- Many exporters must be exposed to the public, and the configuration there is also verbose.
 
-Dependencies
-------------
+In the case of multi-service hosts or clusters (desktop machines, some simple single-node service deployments or
+Kubernetes clusters) it seems reasonable instead to use the federation feature of Prometheus to manage each set
+of services as a single upstream configurable endpoint. This has a number of advantages:
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+- It's inherently more reliable to use federated servers as data is checkpointed at multiple points along the way
+- When services change hands (for example, get passed between one service provider to another) monitoring is
+  included with that package
+- It allows a primitive set of ACLs, where the owners of a service can see relevant metrics but not the entire
+  set of metrics across all services.
 
-Example Playbook
-----------------
+## Requirements
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+This is only possible on operating systems packing Prometheus 2+ (at the time of writing Debian "buster" or
+"stretch-backports").
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+## Role Variables
 
-License
--------
+The variables are all documented in `vars/main.yml`.
 
-BSD
+## Dependencies
 
-Author Information
-------------------
+There are no dependencies for this work.
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+## Installation
+
+### Ansible Galaxy (recommended)
+
+```bash
+$ cd path/to/playbook/root
+$ cat >> requirements.yaml <<EOF
+- src: "https://github.com/littlemanco/ansible-role-prometheus-server"
+  version: "master" # <----- Update this to a stable version
+  name: "littlemanco.prometheus-server"
+EOF
+$ ansible-galaxy install -r requirements.yaml
+```
+
+### Git Submodules
+
+```
+$ cd path/to/playbook/root
+$ mkdir roles/
+$ git submodule add https://github.com/littlemanco/ansible-role-prometheus-server.git  roles/sitewards.prometheus-server
+```
+
+## Usage
+
+Include this in another ansible playbook. For sample, consider a generic server playbook:
+
+```
+---
+# $PLAYBOOK_ROOT/server.yaml
+- name: "server"
+  hosts: all
+  become: true
+  become_user: "root"
+```
+
+Add the reference for the role:
+
+```
+# $PLAYBOOK_ROOT/server.yaml
+# ...
+become_user: "root"
+roles
+  - "littlemanco.prometheus-server"
+```
+
+This should work!
+
+## License
+
+MIT
+
+## Author Information
+
+- https://www.andrewhowden.com/
