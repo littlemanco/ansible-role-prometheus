@@ -5,8 +5,9 @@
     state: "present"
 
 - name: "Configure the boot arguments"
-  lineinfile:
-    path: "/etc/default/prometheus"
-    regexp: '^ARGS='
-    line: 'ARGS="{{ prometheus__server_args | join(" ") }}"'
+  template:
+    src: "etc/default/defaults.j2"
+    dest: "/etc/default/prometheus"
+  vars:
+    __prometheus__args: "{{ prometheus__server_args }}"
   notify: "restart prometheus-server"

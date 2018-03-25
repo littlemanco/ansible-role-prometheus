@@ -43,9 +43,9 @@ There are no dependencies for this work.
 ```bash
 $ cd path/to/playbook/root
 $ cat >> requirements.yaml <<EOF
-- src: "https://github.com/littlemanco/ansible-role-prometheus-server"
+- src: "https://github.com/littlemanco/ansible-role-prometheus"
   version: "master" # <----- Update this to a stable version
-  name: "littlemanco.prometheus-server"
+  name: "littlemanco.prometheus"
 EOF
 $ ansible-galaxy install -r requirements.yaml
 ```
@@ -55,7 +55,7 @@ $ ansible-galaxy install -r requirements.yaml
 ```
 $ cd path/to/playbook/root
 $ mkdir roles/
-$ git submodule add https://github.com/littlemanco/ansible-role-prometheus-server.git  roles/sitewards.prometheus-server
+$ git submodule add https://github.com/littlemanco/ansible-role-prometheus.git  roles/prometheus.prometheus
 ```
 
 ## Usage
@@ -78,7 +78,7 @@ Add the reference for the role:
 # ...
 become_user: "root"
 roles
-  - "littlemanco.prometheus-server"
+  - "littlemanco.prometheus"
 ```
 
 This should work!
