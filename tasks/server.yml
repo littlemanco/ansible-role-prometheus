@@ -1,0 +1,12 @@
+---
+- name: "Install the Prometheus server"
+  package:
+    name: "prometheus"
+    state: "present"
+
+- name: "Configure the boot arguments"
+  lineinfile:
+    path: "/etc/default/prometheus"
+    regexp: '^ARGS='
+    line: 'ARGS="{{ prometheus__server_args | join(" ") }}"'
+  notify: "restart prometheus-server"

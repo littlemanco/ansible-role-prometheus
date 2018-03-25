@@ -1,2 +1,12 @@
 ---
-# vars file for .
+## The arguments that influence the runtime behaviour of Prometheus
+##
+## See
+##  $ prometheus --help
+##
+prometheus__server_args:
+  ## Bound to 127.0.0.1 as if it's required to federate, it's expected that another service will handle TLS and
+  ## authentication
+  ##
+  ## See https://github.com/sitewards/ansible-role-prometheus-proxy
+  - '--web.listen-address="127.0.0.1:9090"'
