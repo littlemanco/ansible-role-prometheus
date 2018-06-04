@@ -22,3 +22,31 @@ prometheus__node_exporter_args:
   - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)'
   - '--collector.netdev.ignored-devices=^lo$'
   - '--collector.textfile.directory=/var/lib/prometheus/node-exporter'
+
+## The version of the binary to install
+##
+## See
+##   https://github.com/prometheus/prometheus/releases/
+##
+prometheus__server_binary_version: "2.2.1"
+
+## The SHA 256 sum of the binary that should be installed
+##
+## See
+##   https://github.com/prometheus/prometheus/releases/
+##
+prometheus__server_binary_sha256sum: "ec1798dbda1636f49d709c3931078dc17eafef76c480b67751aa09828396cf31"
+
+## The version of the binary to install
+##
+## See
+##   https://github.com/prometheus/node_exporter/releases
+##
+prometheus__node_exporter_binary_version: "0.16.0"
+
+## The SHA 256 sum of the binary that should be installed
+##
+## See
+##   https://github.com/prometheus/node_exporter/releases
+##
+prometheus__node_exporter_binary_sha256sum: "e92a601a5ef4f77cce967266b488a978711dabc527a720bea26505cba426c029"
