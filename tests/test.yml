@@ -1,5 +1,6 @@
 ---
-- hosts: localhost
-  remote_user: root
+- hosts: all
+
+  vars: {}
   roles:
-    - .
+    - role_under_test
