@@ -28,6 +28,10 @@ of services as a single upstream configurable endpoint. This has a number of adv
 This is only possible on operating systems packing Prometheus 2+ (at the time of writing Debian "buster" or
 "stretch-backports").
 
+## Limitations
+
+Please note, at the time of writing only the amd64 type architecture is supported on binary installations.
+
 ## Role Variables
 
 The variables are all documented in `vars/main.yml`.
