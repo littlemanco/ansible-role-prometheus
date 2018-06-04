@@ -1,8 +1,6 @@
 ---
 - name: "Install the Prometheus server"
-  package:
-    name: "prometheus"
-    state: "present"
+  include_tasks: "install/{{ansible_distribution|lower}}{{ansible_distribution_version}}.yml"
 
 - name: "Configure the boot arguments"
   template:
