@@ -73,3 +73,10 @@
     src: "etc/systemd/system/prometheus.service"
     dest: "/etc/systemd/system/prometheus.service"
   notify: "restart prometheus-server"
+
+- name: "Remove the workdir"
+  file:
+    path: "{{ __prometheus_server_install_workdir.path }}"
+    state: "absent"
+  when:
+    - "__prometheus_server_installed == false"

@@ -49,4 +49,4 @@ prometheus__node_exporter_binary_version: "0.16.0"
 ## See
 ##   https://github.com/prometheus/node_exporter/releases
 ##
-prometheus__node_exporter_binary_sha256sum: "e92a601a5ef4f77cce967266b488a978711dabc527a720bea26505cba426c029"
+prometheus__node_exporter_binary_sha256sum: "29606320aac8375889bb74ac15de91484fb126c2a847f4a30d5dbf972c4675bd"
