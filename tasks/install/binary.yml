@@ -20,14 +20,42 @@
   tempfile:
     state: "directory"
   register: "__prometheus_server_install_workdir"
+  when:
+    - "__prometheus_server_installed == false"
 
 - name: "Download the appropriate prometheus version"
   unarchive:
     src: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus__server_binary_version }}/prometheus-{{ prometheus__server_binary_version }}.linux-amd64.tar.gz"
     dest: "{{ __prometheus_server_install_workdir.path }}"
     remote_src: true
+  when:
+    - "__prometheus_server_installed == false"
 
 - name: "Get the hash of the downloaded binary"
   stat:
     path: "{{ __prometheus_server_install_workdir.path }}/prometheus"
     checksum_algorithm: "sha256"
+  register: "__stat_prometheus_server_download"
+  when:
+    - "__prometheus_server_installed == false"
+
+- debug:
+    var: "__stat_prometheus_server_download"
+  when:
+    - "__prometheus_server_installed == false"
+
+- fail:
+    msg: "The checksum verification failed for the downloaded prometheus server"
+  when:
+    __stat_prometheus_server_download.stat.checksum !== prometheus__server_binary_sha256sum
+
+- name: "Install prometheus"
+  copy:
+    src: "{{ __prometheus_server_install_workdir.path }}/prometheus"
+    dest: "/usr/local/bin/prometheus"
+    owner: "root"
+    group: "root"
+    mode: "777"
+    remote_src: "yes"
+  when:
+    - "__prometheus_server_installed == false"
