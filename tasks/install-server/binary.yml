@@ -16,6 +16,13 @@
   when:
     - "__stat_prometheus_server.stat.exists == false"
 
+- name: "Determine if the version of Prometheus is valid"
+  set_fact:
+    __prometheus_server_installed: true
+  when:
+    - "__stat_prometheus_server.stat.exists == true"
+    - "__stat_prometheus_server.stat.checksum == prometheus__server_binary_sha256sum"
+
 - name: "Create a working directory for installatino"
   tempfile:
     state: "directory"
@@ -47,7 +54,8 @@
 - fail:
     msg: "The checksum verification failed for the downloaded prometheus server"
   when:
-    __stat_prometheus_server_download.stat.checksum != prometheus__server_binary_sha256sum
+    - "__prometheus_server_installed == false"
+    - "__stat_prometheus_server_download.stat.checksum != prometheus__server_binary_sha256sum"
 
 - name: "Install prometheus"
   copy:
@@ -59,3 +67,9 @@
     remote_src: "yes"
   when:
     - "__prometheus_server_installed == false"
+
+- name: "Install the system service"
+  template:
+    src: "etc/systemd/system/prometheus.service"
+    dest: "/etc/systemd/system/prometheus.service"
+  notify: "restart prometheus-server"
