@@ -33,7 +33,7 @@
 
 - name: "Get the hash of the downloaded binary"
   stat:
-    path: "{{ __prometheus_server_install_workdir.path }}/prometheus"
+    path: "{{ __prometheus_server_install_workdir.path }}/prometheus-{{ prometheus__server_binary_version }}.linux-amd64/prometheus"
     checksum_algorithm: "sha256"
   register: "__stat_prometheus_server_download"
   when:
@@ -47,11 +47,11 @@
 - fail:
     msg: "The checksum verification failed for the downloaded prometheus server"
   when:
-    __stat_prometheus_server_download.stat.checksum !== prometheus__server_binary_sha256sum
+    __stat_prometheus_server_download.stat.checksum != prometheus__server_binary_sha256sum
 
 - name: "Install prometheus"
   copy:
-    src: "{{ __prometheus_server_install_workdir.path }}/prometheus"
+    src: "{{ __prometheus_server_install_workdir.path }}/prometheus-{{ prometheus__server_binary_version }}.linux-amd64/prometheus"
     dest: "/usr/local/bin/prometheus"
     owner: "root"
     group: "root"
