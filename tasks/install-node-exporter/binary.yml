@@ -7,9 +7,6 @@
     checksum_algorithm: "sha256"
   register: "__stat_prometheus_node_exporter"
 
-- debug:
-    var: __stat_prometheus_node_exporter
-
 - name: "Determine if the version of the node exporter is valid"
   set_fact:
     __prometheus_node_exporter_installed: false
@@ -43,11 +40,6 @@
     path: "{{ __prometheus_node_exporter_install_workdir.path }}/node_exporter-{{ prometheus__node_exporter_binary_version }}.linux-amd64/node_exporter"
     checksum_algorithm: "sha256"
   register: "__stat_prometheus_node_exporter_download"
-  when:
-    - "__prometheus_node_exporter_installed == false"
-
-- debug:
-    var: "__stat_prometheus_node_exporter_download"
   when:
     - "__prometheus_node_exporter_installed == false"
 

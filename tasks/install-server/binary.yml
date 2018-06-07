@@ -7,9 +7,6 @@
     checksum_algorithm: "sha256"
   register: "__stat_prometheus_server"
 
-- debug:
-    var: __stat_prometheus_server
-
 - name: "Determine if the version of Prometheus is valid"
   set_fact:
     __prometheus_server_installed: false
@@ -43,11 +40,6 @@
     path: "{{ __prometheus_server_install_workdir.path }}/prometheus-{{ prometheus__server_binary_version }}.linux-amd64/prometheus"
     checksum_algorithm: "sha256"
   register: "__stat_prometheus_server_download"
-  when:
-    - "__prometheus_server_installed == false"
-
-- debug:
-    var: "__stat_prometheus_server_download"
   when:
     - "__prometheus_server_installed == false"
 
