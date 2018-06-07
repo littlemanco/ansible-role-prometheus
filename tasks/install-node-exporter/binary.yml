@@ -1,0 +1,74 @@
+---
+# Binary installation
+# Used when the system has no packages available
+- name: "Determine if the correct node exporter binary is already installed"
+  stat:
+    path: "/usr/local/bin/node_exporter"
+    checksum_algorithm: "sha256"
+  register: "__stat_prometheus_node_exporter"
+
+- name: "Determine if the version of the node exporter is valid"
+  set_fact:
+    __prometheus_node_exporter_installed: false
+  when:
+    - "__stat_prometheus_node_exporter.stat.exists == false"
+
+- name: "Determine if the version of the node exporter is valid"
+  set_fact:
+    __prometheus_node_exporter_installed: true
+  when:
+    - "__stat_prometheus_node_exporter.stat.exists == true"
+    - "__stat_prometheus_node_exporter.stat.checksum == prometheus__node_exporter_binary_sha256sum"
+
+- name: "Create a working directory for installation"
+  tempfile:
+    state: "directory"
+  register: "__prometheus_node_exporter_install_workdir"
+  when:
+    - "__prometheus_node_exporter_installed == false"
+
+- name: "Download the appropriate node exporter version"
+  unarchive:
+    src: "https://github.com/prometheus/node_exporter/releases/download/v{{ prometheus__node_exporter_binary_version }}/node_exporter-{{ prometheus__node_exporter_binary_version }}.linux-amd64.tar.gz"
+    dest: "{{ __prometheus_node_exporter_install_workdir.path }}"
+    remote_src: true
+  when:
+    - "__prometheus_node_exporter_installed == false"
+
+- name: "Get the hash of the downloaded binary"
+  stat:
+    path: "{{ __prometheus_node_exporter_install_workdir.path }}/node_exporter-{{ prometheus__node_exporter_binary_version }}.linux-amd64/node_exporter"
+    checksum_algorithm: "sha256"
+  register: "__stat_prometheus_node_exporter_download"
+  when:
+    - "__prometheus_node_exporter_installed == false"
+
+- fail:
+    msg: "The checksum verification failed for the downloaded prometheus server"
+  when:
+    - "__prometheus_node_exporter_installed == false"
+    - "__stat_prometheus_node_exporter_download.stat.checksum != prometheus__node_exporter_binary_sha256sum"
+
+- name: "Install the Node Exporter"
+  copy:
+    src: "{{ __prometheus_node_exporter_install_workdir.path }}/node_exporter-{{ prometheus__node_exporter_binary_version }}.linux-amd64/node_exporter"
+    dest: "/usr/local/bin/node_exporter"
+    owner: "root"
+    group: "root"
+    mode: "777"
+    remote_src: "yes"
+  when:
+    - "__prometheus_node_exporter_installed == false"
+
+- name: "Install the system service"
+  template:
+    src: "etc/systemd/system/prometheus-node-exporter.service"
+    dest: "/etc/systemd/system/prometheus-node-exporter.service"
+  notify: "restart prometheus-server"
+
+- name: "Remove the workdir"
+  file:
+    path: "{{ __prometheus_node_exporter_install_workdir.path }}"
+    state: "absent"
+  when:
+    - "__prometheus_node_exporter_installed == false"

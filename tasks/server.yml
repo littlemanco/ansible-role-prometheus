@@ -1,6 +1,6 @@
 ---
 - name: "Install the Prometheus server"
-  include_tasks: "install/{{ansible_distribution|lower}}{{ansible_distribution_version}}.yml"
+  include_tasks: "install-server/{{ansible_distribution|lower}}{{ansible_distribution_version}}.yml"
 
 - name: "Configure the boot arguments"
   template:

@@ -1,0 +1,74 @@
+---
+# Binary installation
+# Used when the system has no packages available
+- name: "Determine if the correct server binary is already installed"
+  stat:
+    path: "/usr/local/bin/prometheus"
+    checksum_algorithm: "sha256"
+  register: "__stat_prometheus_server"
+
+- name: "Determine if the version of Prometheus is valid"
+  set_fact:
+    __prometheus_server_installed: false
+  when:
+    - "__stat_prometheus_server.stat.exists == false"
+
+- name: "Determine if the version of Prometheus is valid"
+  set_fact:
+    __prometheus_server_installed: true
+  when:
+    - "__stat_prometheus_server.stat.exists == true"
+    - "__stat_prometheus_server.stat.checksum == prometheus__server_binary_sha256sum"
+
+- name: "Create a working directory for installatino"
+  tempfile:
+    state: "directory"
+  register: "__prometheus_server_install_workdir"
+  when:
+    - "__prometheus_server_installed == false"
+
+- name: "Download the appropriate prometheus version"
+  unarchive:
+    src: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus__server_binary_version }}/prometheus-{{ prometheus__server_binary_version }}.linux-amd64.tar.gz"
+    dest: "{{ __prometheus_server_install_workdir.path }}"
+    remote_src: true
+  when:
+    - "__prometheus_server_installed == false"
+
+- name: "Get the hash of the downloaded binary"
+  stat:
+    path: "{{ __prometheus_server_install_workdir.path }}/prometheus-{{ prometheus__server_binary_version }}.linux-amd64/prometheus"
+    checksum_algorithm: "sha256"
+  register: "__stat_prometheus_server_download"
+  when:
+    - "__prometheus_server_installed == false"
+
+- fail:
+    msg: "The checksum verification failed for the downloaded prometheus server"
+  when:
+    - "__prometheus_server_installed == false"
+    - "__stat_prometheus_server_download.stat.checksum != prometheus__server_binary_sha256sum"
+
+- name: "Install prometheus"
+  copy:
+    src: "{{ __prometheus_server_install_workdir.path }}/prometheus-{{ prometheus__server_binary_version }}.linux-amd64/prometheus"
+    dest: "/usr/local/bin/prometheus"
+    owner: "root"
+    group: "root"
+    mode: "777"
+    remote_src: "yes"
+  when:
+    - "__prometheus_server_installed == false"
+
+- name: "Install the system service"
+  template:
+    src: "etc/systemd/system/prometheus.service"
+    dest: "/etc/systemd/system/prometheus.service"
+  notify: "restart prometheus-server"
+
+- name: "Remove the workdir"
+  file:
+    path: "{{ __prometheus_server_install_workdir.path }}"
+    state: "absent"
+  when:
+    - "__prometheus_server_installed == false"

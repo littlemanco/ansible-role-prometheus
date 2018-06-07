@@ -1,13 +1,3 @@
 ---
-- name: "Install the node exporter exporter"
-  package:
-    name: "prometheus-node-exporter"
-    state: "present"
-
-- name: "Configure the boot arguments"
-  template:
-    src: "etc/default/defaults.j2"
-    dest: "/etc/default/prometheus-node-exporter"
-  vars:
-    __prometheus__args: "{{ prometheus__node_exporter_args }}"
-  notify: "restart prometheus-node-exporter"
+- name: "Install the Prometheus node exporter"
+  include_tasks: "install-node-exporter/{{ansible_distribution|lower}}{{ansible_distribution_version}}.yml"
