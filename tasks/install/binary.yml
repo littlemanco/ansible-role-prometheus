@@ -4,7 +4,30 @@
 - name: "Determine if the correct server binary is already installed"
   stat:
     path: "/usr/local/bin/prometheus"
-  register: "__stat_prometheus"
+    checksum_algorithm: "sha256"
+  register: "__stat_prometheus_server"
 
 - debug:
-    var: __stat_prometheus
+    var: __stat_prometheus_server
+
+- name: "Determine if the version of Prometheus is valid"
+  set_fact:
+    __prometheus_server_installed: false
+  when:
+    - "__stat_prometheus_server.stat.exists == false"
+
+- name: "Create a working directory for installatino"
+  tempfile:
+    state: "directory"
+  register: "__prometheus_server_install_workdir"
+
+- name: "Download the appropriate prometheus version"
+  unarchive:
+    src: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus__server_binary_version }}/prometheus-{{ prometheus__server_binary_version }}.linux-amd64.tar.gz"
+    dest: "{{ __prometheus_server_install_workdir.path }}"
+    remote_src: true
+
+- name: "Get the hash of the downloaded binary"
+  stat:
+    path: "{{ __prometheus_server_install_workdir.path }}/prometheus"
+    checksum_algorithm: "sha256"
