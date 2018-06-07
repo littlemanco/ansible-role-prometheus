@@ -7,4 +7,4 @@
   register: "__stat_prometheus"
 
 - debug:
-    var: __stat_promethues
+    var: __stat_prometheus

@@ -28,14 +28,14 @@ prometheus__node_exporter_args:
 ## See
 ##   https://github.com/prometheus/prometheus/releases/
 ##
-prometheus__server_binary_version: "2.2.1"
+prometheus__server_binary_version: "2.3.0"
 
 ## The SHA 256 sum of the binary that should be installed
 ##
 ## See
 ##   https://github.com/prometheus/prometheus/releases/
 ##
-prometheus__server_binary_sha256sum: "ec1798dbda1636f49d709c3931078dc17eafef76c480b67751aa09828396cf31"
+prometheus__server_binary_sha256sum: "f806357db68a493ebd0ef24bb3cca550ee245831b306bde055253513bcb93496"
 
 ## The version of the binary to install
 ##
