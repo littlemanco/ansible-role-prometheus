@@ -9,3 +9,18 @@
   vars:
     __prometheus__args: "{{ prometheus__server_args }}"
   notify: "restart prometheus-server"
+
+- name: "Create the etc directory"
+  file:
+    path: "/etc/prometheus"
+    state: "directory"
+    owner: "root"
+    group: "root"
+    mode: "u=rwx,g=rx,o=rx"
+
+- name: "Render the system configuration"
+  template:
+    src: "etc/prometheus/prometheus.yml"
+    dest: "/etc/prometheus/prometheus.yml"
+    owner: "root"
+    mode: "u=r,g=r,o="
