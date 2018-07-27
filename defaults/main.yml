@@ -37,6 +37,26 @@ sitewards__prometheus__server_binary_version: "2.3.0"
 ##
 sitewards__prometheus__server_binary_sha256sum: "f806357db68a493ebd0ef24bb3cca550ee245831b306bde055253513bcb93496"
 
+##
+## The URL for alert manager
+## (Optional)
+sitewards__prometheus__server_alertmanager_urls: []
+
+##
+## The scrape configuration for the server
+## (Required)
+sitewards__prometheus__server_scrape_config:
+  - job_name: "prometheus"
+    scrape_interface: 5s
+    scrape_timeout: 5s
+    static_configs:
+      - targets:
+          - "localhost:9090"
+  - job_name: "node"
+    static_configs:
+      - targets:
+          - "localhost:9100"
+
 ## The version of the binary to install
 ##
 ## See
