@@ -26,7 +26,7 @@
     __prometheus_server_installed: true
   when:
     - "__stat_prometheus_server.stat.exists == true"
-    - "__stat_prometheus_server.stat.checksum == prometheus__server_binary_sha256sum"
+    - "__stat_prometheus_server.stat.checksum == sitewards__prometheus__server_binary_sha256sum"
 
 - name: "Create a working directory for installatino"
   tempfile:
@@ -37,7 +37,7 @@
 
 - name: "Download the appropriate prometheus version"
   unarchive:
-    src: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus__server_binary_version }}/prometheus-{{ prometheus__server_binary_version }}.linux-amd64.tar.gz"
+    src: "https://github.com/prometheus/prometheus/releases/download/v{{ sitewards__prometheus__server_binary_version }}/prometheus-{{ sitewards__prometheus__server_binary_version }}.linux-amd64.tar.gz"
     dest: "{{ __prometheus_server_install_workdir.path }}"
     remote_src: true
   when:
@@ -45,7 +45,7 @@
 
 - name: "Get the hash of the downloaded binary"
   stat:
-    path: "{{ __prometheus_server_install_workdir.path }}/prometheus-{{ prometheus__server_binary_version }}.linux-amd64/prometheus"
+    path: "{{ __prometheus_server_install_workdir.path }}/prometheus-{{ sitewards__prometheus__server_binary_version }}.linux-amd64/prometheus"
     checksum_algorithm: "sha256"
   register: "__stat_prometheus_server_download"
   when:
@@ -55,11 +55,11 @@
     msg: "The checksum verification failed for the downloaded prometheus server"
   when:
     - "__prometheus_server_installed == false"
-    - "__stat_prometheus_server_download.stat.checksum != prometheus__server_binary_sha256sum"
+    - "__stat_prometheus_server_download.stat.checksum != sitewards__prometheus__server_binary_sha256sum"
 
 - name: "Install prometheus"
   copy:
-    src: "{{ __prometheus_server_install_workdir.path }}/prometheus-{{ prometheus__server_binary_version }}.linux-amd64/prometheus"
+    src: "{{ __prometheus_server_install_workdir.path }}/prometheus-{{ sitewards__prometheus__server_binary_version }}.linux-amd64/prometheus"
     dest: "/usr/local/bin/prometheus"
     owner: "root"
     group: "root"

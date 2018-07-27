@@ -7,7 +7,7 @@
     src: "etc/default/defaults.j2"
     dest: "/etc/default/prometheus"
   vars:
-    __prometheus__args: "{{ prometheus__server_args }}"
+    __sitewards__prometheus__args: "{{ sitewards__prometheus__server_args }}"
   notify: "restart prometheus-server"
 
 - name: "Create the etc directory"
