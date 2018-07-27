@@ -1,6 +1,14 @@
 ---
 # Binary installation
 # Used when the system has no packages available
+- name: "Ensure the system user is available"
+  user:
+    name: "prometheus"
+    comment: "Prometheus Daemon"
+    home: "/var/lib/prometheus"
+    system: "yes"
+    shell: "/usr/sbin/nologin"
+
 - name: "Determine if the correct server binary is already installed"
   stat:
     path: "/usr/local/bin/prometheus"
