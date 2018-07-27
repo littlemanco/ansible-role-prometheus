@@ -22,5 +22,6 @@
   template:
     src: "etc/prometheus/prometheus.yml"
     dest: "/etc/prometheus/prometheus.yml"
-    owner: "root"
+    owner: "prometheus"
+    group: "prometheus"
     mode: "u=r,g=r,o="
