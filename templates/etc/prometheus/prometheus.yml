@@ -10,11 +10,16 @@ global:
   external_labels:
       monitor: 'example'
 
+{% if sitewards__prometheus__server_alertmanager_urls|length > 0 %}
 # Alertmanager configuration
 alerting:
   alertmanagers:
   - static_configs:
-    - targets: ['localhost:9093']
+    - targets:
+{% for item in sitewards__prometheus__server_alertmanager_urls %}
+      - {{ item }}
+{% endfor %}
+{% endif %}
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
@@ -24,21 +29,22 @@ rule_files:
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
 scrape_configs:
+{% for job in sitewards__prometheus__server_scrape_config %}
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: 'prometheus'
-
-    # Override the global default and scrape targets from this job every 5 seconds.
-    scrape_interval: 5s
-    scrape_timeout: 5s
-
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-
+  - job_name: {{ job["job_name"] }}
+    {% if "scrape_interval" in job %}
+    scrape_interval: {{ job["scrape_interval"] }}
+    {% endif %}
+    {% if "scrape_timeout" in job %}
+    scrape_timeout: {{ job["scrape_timeout"] }}
+    {% endif %}
+    {% if "static_configs" in job %}
     static_configs:
-      - targets: ['localhost:9090']
-
-  - job_name: node
-    # If prometheus-node-exporter is installed, grab stats about the local
-    # machine by default.
-    static_configs:
-      - targets: ['localhost:9100']
+    {% for config in job["static_configs"] %}
+      - targets:
+        {% for target in config["targets"] %}
+          - {{ target }}
+        {% endfor %}
+    {% endfor %}
+    {% endif %}
+{% endfor %}
