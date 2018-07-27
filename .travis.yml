@@ -6,6 +6,8 @@ env:
     playbook: test.yml
   - distro: ubuntu1604
     playbook: test.yml
+  - distro: ubuntu18.04
+    playbook: test.yml
 
 script:
   # Configure test script so we can run extra tests after playbook is run.
