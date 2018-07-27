@@ -4,7 +4,7 @@
 ## See
 ##  $ prometheus --help
 ##
-prometheus__server_args:
+sitewards__prometheus__server_args:
   ## Bound to 127.0.0.1 as if it's required to federate, it's expected that another service will handle TLS and
   ## authentication
   ##
@@ -16,7 +16,7 @@ prometheus__server_args:
 ## See
 ##  $ prometheus-node-exporter --help
 ##
-prometheus__node_exporter_args:
+sitewards__prometheus__node_exporter_args:
   ## Bound to localhost as it's expected metrics will be exfilled by the federated Prometheus
   - '--web.listen-address="127.0.0.1:9100"'
   - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)'
@@ -28,25 +28,25 @@ prometheus__node_exporter_args:
 ## See
 ##   https://github.com/prometheus/prometheus/releases/
 ##
-prometheus__server_binary_version: "2.3.0"
+sitewards__prometheus__server_binary_version: "2.3.0"
 
 ## The SHA 256 sum of the binary that should be installed
 ##
 ## See
 ##   https://github.com/prometheus/prometheus/releases/
 ##
-prometheus__server_binary_sha256sum: "f806357db68a493ebd0ef24bb3cca550ee245831b306bde055253513bcb93496"
+sitewards__prometheus__server_binary_sha256sum: "f806357db68a493ebd0ef24bb3cca550ee245831b306bde055253513bcb93496"
 
 ## The version of the binary to install
 ##
 ## See
 ##   https://github.com/prometheus/node_exporter/releases
 ##
-prometheus__node_exporter_binary_version: "0.16.0"
+sitewards__prometheus__node_exporter_binary_version: "0.16.0"
 
 ## The SHA 256 sum of the binary that should be installed
 ##
 ## See
 ##   https://github.com/prometheus/node_exporter/releases
 ##
-prometheus__node_exporter_binary_sha256sum: "29606320aac8375889bb74ac15de91484fb126c2a847f4a30d5dbf972c4675bd"
+sitewards__prometheus__node_exporter_binary_sha256sum: "29606320aac8375889bb74ac15de91484fb126c2a847f4a30d5dbf972c4675bd"

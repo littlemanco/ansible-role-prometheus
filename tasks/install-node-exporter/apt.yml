@@ -9,5 +9,5 @@
     src: "etc/default/defaults.j2"
     dest: "/etc/default/prometheus-node-exporter"
   vars:
-    __prometheus__args: "{{ prometheus__node_exporter_args }}"
+    __sitewards__prometheus__args: "{{ sitewards__prometheus__node_exporter_args }}"
   notify: "restart prometheus-node-exporter"
