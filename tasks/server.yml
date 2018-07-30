@@ -25,3 +25,4 @@
     owner: "prometheus"
     group: "prometheus"
     mode: "u=r,g=r,o="
+  notify: "restart prometheus-server"

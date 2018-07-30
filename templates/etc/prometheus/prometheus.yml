@@ -7,8 +7,12 @@ global:
 
   # Attach these labels to any time series or alerts when communicating with
   # external systems (federation, remote storage, Alertmanager).
+{% if sitewards__prometheus__server_external_labels is defined %}
   external_labels:
-      monitor: 'example'
+{% for item in sitewards__prometheus__server_external_labels %}
+      {{ item.key }}: '{{ item.value }}'
+{% endfor %}
+{% endif %}
 
 {% if sitewards__prometheus__server_alertmanager_urls|length > 0 %}
 # Alertmanager configuration
@@ -30,21 +34,20 @@ rule_files:
 # Here it's Prometheus itself.
 scrape_configs:
 {% for job in sitewards__prometheus__server_scrape_config %}
-  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
   - job_name: {{ job["job_name"] }}
-    {% if "scrape_interval" in job %}
+{% if "scrape_interval" in job %}
     scrape_interval: {{ job["scrape_interval"] }}
-    {% endif %}
-    {% if "scrape_timeout" in job %}
+{% endif %}
+{% if "scrape_timeout" in job %}
     scrape_timeout: {{ job["scrape_timeout"] }}
-    {% endif %}
-    {% if "static_configs" in job %}
+{% endif %}
+{% if "static_configs" in job %}
     static_configs:
-    {% for config in job["static_configs"] %}
+{% for config in job["static_configs"] %}
       - targets:
-        {% for target in config["targets"] %}
+{% for target in config["targets"] %}
           - {{ target }}
-        {% endfor %}
-    {% endfor %}
-    {% endif %}
 {% endfor %}
+{% endfor %}
+{% endif %}
+{%- endfor %}
