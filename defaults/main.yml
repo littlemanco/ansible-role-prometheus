@@ -37,6 +37,14 @@ sitewards__prometheus__server_binary_version: "2.3.0"
 ##
 sitewards__prometheus__server_binary_sha256sum: "f806357db68a493ebd0ef24bb3cca550ee245831b306bde055253513bcb93496"
 
+## Labels to attached to externally scraped resources. For use in federation, or other aggregation systems.
+##
+## See
+##   https://prometheus.io/docs/prometheus/latest/configuration/configuration/
+sitewards__prometheus__server_external_labels:
+  - key: "external"
+    value: "true"
+
 ##
 ## The URL for alert manager
 ## (Optional)
